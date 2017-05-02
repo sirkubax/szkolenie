@@ -58,3 +58,5 @@ Test
 If all is working, you should see some output that indicates ansible was able to
 run the `ping` module on `localhost`.
 
+=======
+# szkolenie
