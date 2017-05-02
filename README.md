@@ -5,12 +5,13 @@ Getting Started
 System Prerequisites
 --------------------
 
-`$ sudo apt-get install python-virtualenv`
+`$ sudo apt-get install python-virtualenv libpq-dev python-all-dev libffi-dev`
 
 The `python-virtualenv` system package provides, unsurprisingly, the Python
 `virtualenv` package. It is used to isolate groups of third-party libraries and
 allows for multiple Python projects with conflicting dependencies to be
-developed in parallel.
+developed in parallel. `libpq-dev` is important for some sub-package compilation.
+`python-all-dev` provides some Python.h headers. `libffi-dev` needed for cryptography. 
 
 
 Prepare Environment

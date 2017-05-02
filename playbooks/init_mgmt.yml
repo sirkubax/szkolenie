@@ -1,0 +1,9 @@
+---
+#Uruchomienie:
+#~/szkolenie$ ansible-playbook playbooks/init_mgmt.yml
+#
+- hosts: mgmt
+  become: True
+
+  roles:
+    - sys_init_common
