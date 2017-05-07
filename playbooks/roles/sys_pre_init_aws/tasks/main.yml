@@ -1,9 +1,9 @@
-- name: Gather facts
-  action: ec2_facts
-
 - name: install python 2
   raw: bash -c "test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)"
   become: true
+
+- name: Gather facts
+  action: ec2_facts
 
 - name: Fix 'Could not load host key /etc/ssh/ssh_host_ed25519_key'
   shell: 'ssh-keygen -A'
