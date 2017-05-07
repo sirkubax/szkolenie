@@ -25,29 +25,6 @@
 ###
 
 #############################
-# Part 0:                   
-# Create VPC
-#############################
-
-- name: Create base VPC and SG infrastructure on Amazon 
-  hosts: localhost
-  connection: local
-  gather_facts: false
-
-  vars:
-  - vars_files_var: ["vars/szkolenie_vpc.yml"]
-
-  pre_tasks:
-      - include_vars: "{{ item }}"
-        with_first_found: "{{ vars_files_var }}"
-      - set_fact:
-          generic_vpc: "{{ szkolenie_vpc }}"
-
-  roles:
-      - { role: mid_create_vpc }
-
-
-#############################
 # Part 1:                   #
 # Create instances          #
 #############################
