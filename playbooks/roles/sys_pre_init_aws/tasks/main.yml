@@ -1,9 +1,5 @@
-
 - name: Gather facts
   action: ec2_facts
-
-- name: Wait for instances to listen on port 22
-  local_action: wait_for state=started host={{ inventory_hostname }} port=22 timeout=150 delay=15
 
 - name: install python 2
   raw: bash -c "test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)"

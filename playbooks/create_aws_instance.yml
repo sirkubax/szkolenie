@@ -1,5 +1,6 @@
 ###
 # EXAMPLE
+#     ansible-playbook playbooks/create_aws_instance.yml -e "type=t2.micro hostname=stg-mgmt-test103 role=mgmt disk=50 location=frankfurt" -vvv
 #
 # SMALL
 #     ansible-playbook create_aws_instance.yml -e "hostname=nfsserver202 type=t2.small role=nfs"
@@ -127,20 +128,23 @@
         ansible_ssh_private_key_file: "{{ ssh_key }}"
       when: ssh_key is defined
 
-    - name: Remove previous known_hosts "Are you sure you want to continue connecting (yes/no)?" query
+    - name: Remove previous known_hosts "1 Are you sure you want to continue connecting (yes/no)?" query
       local_action: shell ssh-keygen -f ~/.ssh/known_hosts -R {{ item }}
       run_once: True
       with_items: "{{ play_hosts }}"
 
-    - name: Ass public key to known_hosts "Are you sure you want to continue connecting (yes/no)?" query
-      local_action: command sh -c 'ssh-keyscan -t rsa {{ item }} >>$HOME/.ssh/known_hosts'
+#zakomentuj ta linie i zobacz co sie stanie :)
+    - name: Wait for instances to listen on port 22
+      local_action: wait_for state=started host={{ inventory_hostname }} port=22 timeout=150 delay=15
+
+    - name: Ass public key to known_hosts "2 Are you sure you want to continue connecting (yes/no)?" query
+      local_action: command sh -c 'ssh-keyscan {{ item }} >>$HOME/.ssh/known_hosts >> ~/.ssh/known_hosts'
       run_once: True
       with_items: "{{ play_hosts }}"
 
-
 - hosts: temp_group
   become: false
-  gather_facts: false
+  gather_facts: True
 
   vars:
   - vars_files_var: ["vars/{{ location }}.yml", "vars/location_default.yml"] #Name of the region: irland, frankfurt, etc...
@@ -179,6 +183,7 @@
       args:
           tags:
               state_tag: prepared
+              Name: "{{ hostname }}"
       delegate_to: localhost
 
     - name: Get rid of SSH "Are you sure you want to continue connecting (yes/no)?" query
