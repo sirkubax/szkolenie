@@ -56,6 +56,14 @@ szkolenie_vpc:
             from_port: 22
             to_port: 22
             cidr_ip: 212.67.156.30/32   #muszynski homeA
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 10.218.0.0/24 
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 35.177.228.4/32 #mgmt 
           - proto: icmp
             from_port: -1
             to_port: -1

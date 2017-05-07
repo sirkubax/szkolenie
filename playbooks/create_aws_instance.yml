@@ -90,6 +90,7 @@
                   volume_size: "{{ diskB | default(0) }}"
                   delete_on_termination: "{{ delete_disk | default(True) }}"
                   #iops: 50
+            assign_public_ip: "{{ assign_public_ip | default(False) }}"
         register: ec2
 
       - name: Check state tag
@@ -98,6 +99,12 @@
 
       - name: Add instances to host group
         local_action: add_host hostname={{ item.private_ip }} groupname=temp_group
+        when: item.public_ip is not defined
+        with_items: "{{ ec2.instances }}"
+
+      - name: Add instances to host group
+        local_action: add_host hostname={{ item.public_ip }} groupname=temp_group
+        when: item.public_ip is defined
         with_items: "{{ ec2.instances }}"
 
       - name: List new instances
@@ -139,6 +146,10 @@
       local_action: command sh -c 'ssh-keyscan {{ item }} >>$HOME/.ssh/known_hosts >> ~/.ssh/known_hosts'
       run_once: True
       with_items: "{{ play_hosts }}"
+
+    - name: install python 2
+      raw: bash -c "test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)"
+      become: true
 
 - hosts: temp_group
   become: false
@@ -183,6 +194,16 @@
               state_tag: prepared
               Name: "{{ hostname }}"
       delegate_to: localhost
+      when: ec2_url is not defined
+
+    - name: Change tags
+      ec2_tag: resource={{ ansible_ec2_instance_id }} ec2_url=https://ec2.eu-west-2.amazonaws.com
+      args:
+          tags:
+              state_tag: prepared
+              Name: "{{ hostname }}"
+      delegate_to: localhost
+      when: ec2_url is defined
 
     - name: Get rid of SSH "Are you sure you want to continue connecting (yes/no)?" query
       local_action: command sh -c 'ssh-keyscan -t rsa {{ item }} >>$HOME/.ssh/known_hosts'
