@@ -10,4 +10,5 @@ location = frankfurt
 localhost ansible_connection=local ansible_python_interpreter="/usr/bin/env python"
 
 [mgmt]
-172.16.4.14 ansible_ssh_private_key_file=~/.ssh/kuba_aws.pem
+#172.16.4.14 ansible_ssh_private_key_file=~/.ssh/kuba_aws.pem
+mgmt.muszynski.pro ansible_ssh_private_key_file=~/.ssh/kuba_aws_west2.pem

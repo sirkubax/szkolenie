@@ -64,5 +64,6 @@ szkolenie_vpc:
         instance_A:
           tag: 1A
           ip: 35.177.228.4
+          #name: 'mgmt-server'
           name: 'stg-mgmt-test103'
     instance_group: szkolenie1

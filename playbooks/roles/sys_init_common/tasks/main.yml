@@ -13,27 +13,27 @@
     - htop
     - sysstat
     - git
+    - sshfs
+    - curl
+    - tree
+    - python-boto #for s3 files fetching
+    - python-virtualenv #ansible
+    - python-pip #ansible
+    - libpq-dev #ansibl
+    - python-all-dev #ansible
+    - whois #ansible
+    - libffi-dev #ansible
+    - unzip
     #    - iproute2
     #    - pv
-    #    - sshfs
-    #    - curl
-    #    - tree
     #    - iotop
     #    - ntp
     #    - iftop
     #    - etckeeper
     #    - rkhunter
-    #    - python-boto #for s3 files fetching
     #    - fail2ban #sshd jail could be changed
-    #    - python-virtualenv #ansible
-    #    - python-pip #ansible
-    #    - libpq-dev #ansibl
-    #    - python-all-dev #ansible
-    #    - whois #ansible
-    #    - libffi-dev #ansible
     #    - nload
     #    - lvm2
-    #    - unzip
 
     #  - name: install packages
     #    apt: 
