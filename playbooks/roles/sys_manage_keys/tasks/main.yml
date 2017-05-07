@@ -8,3 +8,4 @@
   with_items:
     - { name: id_rsa.kub.pub }
     #- { name: id_rsa.kub.pub, state: absent }
+    - { name: id_rsa_szkolenie.pub }
