@@ -1,19 +1,13 @@
+
+- name: Gather facts
+  action: ec2_facts
+
 - name: Wait for instances to listen on port 22
   local_action: wait_for state=started host={{ inventory_hostname }} port=22 timeout=150 delay=15
 
-- name: Fix .ssh/known_hosts.
-  local_action: command  ssh-keygen -f ~/.ssh/known_hosts -R {{ item }}
-  run_once: True
-  with_items: "{{ play_hosts }}"
-
-- name: Get rid of SSH "Are you sure you want to continue connecting (yes/no)?" query
-  local_action: command sh -c 'ssh-keyscan -H {{ item }} >>$HOME/.ssh/known_hosts'
-  run_once: True
-  with_items: "{{ play_hosts }}"
-
 - name: install python 2
   raw: bash -c "test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)"
-  sudo: true
+  become: true
 
 - name: Fix 'Could not load host key /etc/ssh/ssh_host_ed25519_key'
   shell: 'ssh-keygen -A'

@@ -119,13 +119,32 @@
   - vars_files_var: ["vars/{{ location }}.yml", "vars/location_default.yml"] #Name of the region: irland, frankfurt, etc...
 
   pre_tasks:
-      - include_vars: "{{ item }}"
-        with_first_found: "{{ vars_files_var }}"
+    - include_vars: "{{ item }}"
+      with_first_found: "{{ vars_files_var }}"
 
-      - name: Set correct ssh key path
-        set_fact:
-          ansible_ssh_private_key_file: "{{ ssh_key }}"
-        when: ssh_key is defined
+    - name: Set correct ssh key path
+      set_fact:
+        ansible_ssh_private_key_file: "{{ ssh_key }}"
+      when: ssh_key is defined
+
+    - name: Remove previous known_hosts "Are you sure you want to continue connecting (yes/no)?" query
+      local_action: shell ssh-keygen -f ~/.ssh/known_hosts -R {{ item }}
+      run_once: True
+      with_items: "{{ play_hosts }}"
+
+    - name: Ass public key to known_hosts "Are you sure you want to continue connecting (yes/no)?" query
+      local_action: command sh -c 'ssh-keyscan -t rsa {{ item }} >>$HOME/.ssh/known_hosts'
+      run_once: True
+      with_items: "{{ play_hosts }}"
+
+
+- hosts: temp_group
+  become: false
+  gather_facts: false
+
+  vars:
+  - vars_files_var: ["vars/{{ location }}.yml", "vars/location_default.yml"] #Name of the region: irland, frankfurt, etc...
+    ssh_known_hosts_file: "/etc/ssh/ssh_known_hosts"
 
   roles:
       - { role: sys_pre_init_aws }
