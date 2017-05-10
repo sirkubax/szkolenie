@@ -1,6 +1,6 @@
 ###
 # EXAMPLE
-#     ansible-playbook playbooks/create_aws_instance.yml -e "type=t2.micro hostname=stg-mgmt-test103 role=mgmt disk=50 location=frankfurt" -vvv
+#     ansible-playbook playbooks/create_aws_instance.yml -e "type=t2.nano hostname=apache01 role=apache disk=10 location=london" -vvv
 #
 # SMALL
 #     ansible-playbook create_aws_instance.yml -e "hostname=nfsserver202 type=t2.small role=nfs"
@@ -9,7 +9,7 @@
 #
 # OPTIONS:
 #       location:   [irland, frankfurt] - the default location variables
-#       region: [eu-central-1, eu-west-1] - the region
+#       region: [eu-west-2, eu-west-1] - the region
 #       key:    [kuba_aws, kuba_id, your_key_name ] - the key for instance creation
 #       sg:     [default, private-dmz,..] - security group (per region!)
 #       type:   [t2.small, ...] - instance type
@@ -42,7 +42,7 @@
         with_first_found: "{{ vars_files_var }}"
 
       - ec2_remote_facts:
-          region: "{{ region | default('eu-central-1') }}"
+          region: "{{ region | default('eu-west-2') }}"
           filters:
             "tag:Name": "{{ hostname }}"
         register: with_same_hostname
@@ -51,7 +51,7 @@
             - "with_same_hostname.instances | length == 0"
           msg: "Can't create host with same name"
       - ec2_remote_facts:
-          region: "{{ region | default('eu-central-1') }}"
+          region: "{{ region | default('eu-west-2') }}"
           filters:
             instance-state-name: running
             "tag:Name": "0-state"
@@ -60,14 +60,14 @@
           that:
             - "in_0_state.instances | length == 0"
             - "with_same_hostname.instances | length == 0"
-          msg: "There is host in 0-state in {{ region | default('eu-central-1') }}"
+          msg: "There is host in 0-state in {{ region | default('eu-west-2') }}"
 
       - name: Provision a set of instances
         ec2:
-            region: "{{ region | default('eu-central-1') }}"
+            region: "{{ region | default('eu-west-2') }}"
             key_name: "{{ key | default('kuba_aws') }}"
             group: "{{ sg | default('default') }}"
-            instance_type: "{{ type | default('t2.medium') }}"
+            instance_type: "{{ type | default('t2.nano') }}"
             image: "{{ ami | default('ami-47a23a30') }}"
             vpc_subnet_id: "{{ subnet | default('subnet-97f033fe') }}"
             wait: yes
@@ -78,7 +78,7 @@
                 Name: 0-state
                 state_tag: initial
                 allow_change: True
-                location: "{{ location |default('frankfurt') }}"
+                location: "{{ location |default('london') }}"
                 role: "{{ role | default('empty') }}"
             volumes:
                 - device_name: /dev/sda1

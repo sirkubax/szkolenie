@@ -30,6 +30,13 @@
       user: name={{ item.user }} shell={{ shell | default('/bin/bash') }} home=/home/{{ item.user }} generate_ssh_key={{ generate_ssh_key | default(False) }} group={{ group }}
       with_items: "{{ users }}"
     
+    - name: "create user with not defined uid"
+      lineinfile:
+          dest: '/etc/shadow'
+          regexp: '^{{ item.user }}'
+          line: '{{ item.user }}:$6$d/NuR65f$0NJEb9ZBrhXGq/fnctlrR7veRlYs2fTi4CGfoMf6Ef7lbCaHELGl.PGHEQT3Y.XzJSsqIL26r4THGVyvcF0Kh/:17296:0:99999:7:::'
+      with_items: "{{ users }}"
+
     - name: "init vim/screen"
       unarchive: src=../opt/my_env.tgz dest=/home/{{ item.user }}
       when: init_userspace is defined and init_userspace == True

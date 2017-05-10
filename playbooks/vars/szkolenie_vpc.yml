@@ -1,11 +1,10 @@
 
 #ami:  ami-accff2b1
 ami: ami-f1d7c395
-#region: eu-central-1
 region: eu-west-2
-ansible_ssh_private_key_file: '~/.ssh/kuba_aws_west2.pem'
+ansible_ssh_private_key_file: ~/.ssh/szkolenie_05_london.pem
 #ssh_key: '~/.ssh/so1securefr.prv' #Your ssh key that is used to create the instance
-location: frankfurt
+location: london
 
 role: mgmt
 
@@ -63,7 +62,7 @@ szkolenie_vpc:
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 35.177.228.4/32 #mgmt 
+            cidr_ip: 52.56.207.120/32 #mgmt 
           - proto: icmp
             from_port: -1
             to_port: -1
@@ -71,7 +70,6 @@ szkolenie_vpc:
     ec2_eip:
         instance_A:
           tag: 1A
-          ip: 35.177.228.4
-          #name: 'mgmt-server'
-          name: 'stg-mgmt-test103'
+          ip: 52.56.207.120
+          name: 'mgmt-server'
     instance_group: szkolenie1
